@@ -125,14 +125,12 @@ app.post('/persons', async (request, response, next) => {
 
 
 
-app.put('/persons/:id', (request, response, next) => {
-
+app.put('/persons/:id', async (request, response, next) => {
   const id = request.params.id
   const body = request.body
 
   const isValidNum = /^\d{2,3}-\d+$/.test(body.number)
   const isValidName = body.name.length >= 3 && body.name.length <= 30
-
 
   if (!isValidNum || !isValidName) {
     return response.status(400).json({
@@ -140,20 +138,25 @@ app.put('/persons/:id', (request, response, next) => {
     })
   }
 
-  Person.findOneAndUpdate(
+  try {
+    const updatedPerson = await Person.findByIdAndUpdate(
+      id,
+      body,
+      { new: true, runValidators: true, context: 'query' }
+    )
 
-    id,
-    body,
-    { new: true, runValidators: true, context: 'query' }
-  )
-    .then((updatedPerson) => {
-      response.json(updatedPerson)
+    if (!updatedPerson) {
+      return response.status(404).json({
+        error: 'Person not found'
+      })
+    }
 
-    })
-    .catch(error => next(error))
-
-
+    response.json(updatedPerson)
+  } catch (error) {
+    next(error)
+  }
 })
+
 
 
 const errorHandler = (error, request, response, next) => {
