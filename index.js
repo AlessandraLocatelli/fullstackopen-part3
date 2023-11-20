@@ -1,6 +1,5 @@
 
 require('dotenv').config()
-const mongoose = require('mongoose')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -8,7 +7,7 @@ const Person = require('./models/persons')
 const app = express()
 app.use(cors())
 
-morgan.token('type', (req, res) => {
+morgan.token('type', (req) => {
   return JSON.stringify(req.body)
 })
 
@@ -72,7 +71,7 @@ app.delete('/persons/:id', (request, response, next) => {
 
   Person
     .findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(404).end()
 
     })
@@ -140,7 +139,7 @@ app.put('/persons/:id', (request, response, next) => {
       error: 'Invalid name or phone number format'
     })
   }
-   
+
   Person.findOneAndUpdate(
 
     id,

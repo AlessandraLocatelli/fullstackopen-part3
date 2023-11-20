@@ -6,7 +6,7 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-const password = process.argv[2];
+const password = process.argv[2]
 
 const url = `mongodb+srv://fullstackk:${password}@cluster0.iqm7nut.mongodb.net/?retryWrites=true&w=majority`
 
@@ -28,15 +28,15 @@ const personSchema = new mongoose.Schema({
     maxLength: 30,
     required: true,
     validate : {
-    validator : function(v) {
-    return /^\d{2,3}-\d+$/.test(v)
-    },
-    message : props => `${props.value} is not a valid phone number!`
-   } 
+      validator : function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
+      },
+      message : props => `${props.value} is not a valid phone number!`
+    }
   }
 })
 
-const Person = mongoose.model('Person', personSchema);
+const Person = mongoose.model('Person', personSchema)
 
 if (process.argv.length === 3) {
   Person.find({}).then(result => {
@@ -55,7 +55,7 @@ if (process.argv.length === 3) {
     number: number,
   })
 
-  person.save().then(result => {
+  person.save().then(() => {
     console.log('Person saved!')
     Person.find({}).then(updatedResult => {
       console.log('Updated list of persons:')
